@@ -4,6 +4,11 @@ import { useQuery } from "react-query";
 import { fetchItemFromAPI } from "./api";
 import { formatPrice } from "./utils";
 
+interface SizeOption {
+  id: number;
+  label: string;
+}
+
 const Item = () => {
   const { isLoading, error, data } = useQuery("item", fetchItemFromAPI);
 
@@ -26,21 +31,17 @@ const Item = () => {
           <div className="mb-4">
             <h2 className="text-xl font-bold">Classic Tee</h2>
             <p className="text-gray-600">{formatPrice(data.price)}</p>
-            <p className="text-gray-600">
-              Description Lorem ipsum dolor sit amet, consectetur adipiscing
-              elit.
-            </p>
+            <p className="text-gray-600">{data.description}</p>
           </div>
           <div className="space-x-2">
-            <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-              S
-            </button>
-            <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-              M
-            </button>
-            <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-              L
-            </button>
+            {data.sizeOptions.map((sizeOption: SizeOption) => (
+              <button
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                key={sizeOption.id}
+              >
+                {sizeOption.label}
+              </button>
+            ))}
           </div>
           <div className="mt-5">
             <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
