@@ -28,10 +28,14 @@ const Item = () => {
   };
 
   useEffect(() => {
-    // Get cart items from localStorage when the component mounts
-    const cartFromLocalStorage = localStorage.getItem("cart");
-    setCartItems(cartFromLocalStorage ? JSON.parse(cartFromLocalStorage) : []);
-  }, [cartItems, localStorage.getItem("cart")]);
+    if (typeof window !== "undefined") {
+      const cartFromLocalStorage = localStorage.getItem("cart");
+      const parsedCart = cartFromLocalStorage
+        ? JSON.parse(cartFromLocalStorage)
+        : [];
+      setCartItems(parsedCart);
+    }
+  }, [cartItems]);
 
   const handleSizeButtonClick = (size: string) => {
     setSelectedSize(size);
