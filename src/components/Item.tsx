@@ -39,6 +39,11 @@ const Item = () => {
     }
   };
 
+  const handleResetCart = () => {
+    localStorage.removeItem("cart");
+    alert("cart's empty.");
+  };
+
   // console.log(data);
 
   console.log(JSON.parse(localStorage.getItem("cart") || "[]"));
@@ -94,6 +99,12 @@ const Item = () => {
                 onClick={handleAddToCart}
               >
                 Add to my cart
+              </button>
+              <button
+                className="hover:bg-gray-400 text-[#222222] font-bold py-2 px-4 rounded border-[#222222] border-2"
+                onClick={handleResetCart}
+              >
+                Reset cart
               </button>
             </div>
           </div>
