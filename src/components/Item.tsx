@@ -1,7 +1,21 @@
 import Image from "next/image";
 import item from "../images/classic-tee.jpg";
+import { useQuery } from "react-query";
+import { fetchItemFromAPI } from "./api";
+import { formatPrice } from "./utils";
 
 const Item = () => {
+  const { isLoading, error, data } = useQuery("item", fetchItemFromAPI);
+
+  console.log(data);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading item</div>;
+  }
   return (
     <div className="container mx-auto p-8">
       <div className="flex flex-wrap">
@@ -11,7 +25,7 @@ const Item = () => {
         <div className="w-full md:w-1/2 p-4">
           <div className="mb-4">
             <h2 className="text-xl font-bold">Classic Tee</h2>
-            <p className="text-gray-600">$75.00</p>
+            <p className="text-gray-600">{formatPrice(data.price)}</p>
             <p className="text-gray-600">
               Description Lorem ipsum dolor sit amet, consectetur adipiscing
               elit.
