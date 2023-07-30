@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import item from "../images/classic-tee.jpg";
 import { useQuery } from "react-query";
 import { fetchItemFromAPI } from "./api";
 import { formatPrice } from "./utils";
 import Header from "./Header";
+import Modal from "./modal/Modal";
 
 interface SizeOption {
   id: number;
@@ -14,6 +15,23 @@ interface SizeOption {
 const Item = () => {
   const { isLoading, error, data } = useQuery("item", fetchItemFromAPI);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [cartItems, setCartItems] = useState([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
+    // Get cart items from localStorage when the component mounts
+    const cartFromLocalStorage = localStorage.getItem("cart");
+    setCartItems(cartFromLocalStorage ? JSON.parse(cartFromLocalStorage) : []);
+  }, [cartItems, localStorage.getItem("cart")]);
 
   const handleSizeButtonClick = (size: string) => {
     setSelectedSize(size);
@@ -41,12 +59,13 @@ const Item = () => {
 
   const handleResetCart = () => {
     localStorage.removeItem("cart");
+    setCartItems([]);
     alert("cart's empty.");
   };
 
   // console.log(data);
 
-  console.log(JSON.parse(localStorage.getItem("cart") || "[]"));
+  // console.log(JSON.parse(localStorage.getItem("cart") || "[]"));
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -55,13 +74,17 @@ const Item = () => {
   if (error) {
     return <div>Error loading item</div>;
   }
+
   return (
     <>
       {" "}
       <div className="mt-5 mx-10">
         <div style={{ display: "flex", alignItems: "center" }}>
           <Header />
-          <button className="-ml-32 hover:bg-gray-400 text-[#888888] font-bold py-2 px-4 rounded border-[#888888] border-2">
+          <button
+            className="-ml-32 hover:bg-gray-400 text-[#888888] font-bold py-2 px-4 rounded border-[#888888] border-2"
+            onClick={openModal}
+          >
             My cart
           </button>{" "}
         </div>
@@ -100,12 +123,19 @@ const Item = () => {
               >
                 Add to my cart
               </button>
-              <button
-                className="hover:bg-gray-400 text-[#222222] font-bold py-2 px-4 rounded border-[#222222] border-2"
-                onClick={handleResetCart}
-              >
-                Reset cart
-              </button>
+            </div>
+            <button
+              className="mt-10 hover:bg-gray-400 text-[#222222] font-bold py-2 px-4 rounded border-[#222222] border-2"
+              onClick={handleResetCart}
+            >
+              Reset cart
+            </button>
+            <div>
+              <Modal
+                isOpen={isModalOpen}
+                onRequestClose={closeModal}
+                items={cartItems}
+              />
             </div>
           </div>
         </div>
