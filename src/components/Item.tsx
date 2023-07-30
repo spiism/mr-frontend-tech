@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import Image from "next/image";
 import item from "../images/classic-tee.jpg";
 import { useQuery } from "react-query";
@@ -12,8 +13,35 @@ interface SizeOption {
 
 const Item = () => {
   const { isLoading, error, data } = useQuery("item", fetchItemFromAPI);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
-  console.log(data);
+  const handleSizeButtonClick = (size: string) => {
+    setSelectedSize(size);
+  };
+
+  const handleAddToCart = () => {
+    if (selectedSize) {
+      const itemToAdd = {
+        ...data,
+        selectedSize,
+      };
+      // get current cart items from local storage
+      const existingCartItems = JSON.parse(
+        localStorage.getItem("cart") || "[]"
+      );
+      // add  new item
+      existingCartItems.push(itemToAdd);
+      // Save the updated cart back to local storage
+      localStorage.setItem("cart", JSON.stringify(existingCartItems));
+      alert(`Item "${data.title}" with size "${selectedSize}" added to cart!`);
+    } else {
+      alert("Please select a size before adding to cart.");
+    }
+  };
+
+  // console.log(data);
+
+  console.log(JSON.parse(localStorage.getItem("cart") || "[]"));
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -54,13 +82,17 @@ const Item = () => {
                 <button
                   className="hover:bg-gray-300 text-[#888888] font-bold py-2 px-4 rounded border-[#888888] border-2"
                   key={sizeOption.id}
+                  onClick={() => handleSizeButtonClick(sizeOption.label)}
                 >
                   {sizeOption.label}
                 </button>
               ))}
             </div>
             <div className="mt-5">
-              <button className="hover:bg-gray-400 text-[#222222] font-bold py-2 px-4 rounded border-[#222222] border-2">
+              <button
+                className="hover:bg-gray-400 text-[#222222] font-bold py-2 px-4 rounded border-[#222222] border-2"
+                onClick={handleAddToCart}
+              >
                 Add to my cart
               </button>
             </div>
