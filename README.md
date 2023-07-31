@@ -1,6 +1,6 @@
 ## Live at:
 ```bash
-https://mr-frontend-tech-gn7mjion2-spiism.vercel.app/
+https://mr-frontend-tech.vercel.app/
 ```
 
 
