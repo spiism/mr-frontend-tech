@@ -110,9 +110,14 @@ const Item = () => {
               <p className="text-[#888888]">
                 Size<span className="text-[#C90000]">*</span>
               </p>
+
               {data.sizeOptions.map((sizeOption: SizeOption) => (
                 <button
-                  className="hover:bg-gray-300 text-[#888888] font-bold py-2 px-4 rounded border-[#888888] border-2"
+                  className={`active:bg-gray-400 hover:bg-gray-300 font-bold py-2 px-4 rounded border-2 ${
+                    selectedSize === sizeOption.label
+                      ? "bg-gray-800 text-white border-[#888888]"
+                      : "border-[#888888] text-[#888888]"
+                  }`}
                   key={sizeOption.id}
                   onClick={() => handleSizeButtonClick(sizeOption.label)}
                 >
